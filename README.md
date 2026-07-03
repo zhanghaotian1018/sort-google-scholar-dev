@@ -1,227 +1,175 @@
-# Sort Google Scholar by the Number of Citations
-[![PyPI Version](https://img.shields.io/pypi/v/sortgs.svg)](https://pypi.org/project/sortgs/)
+# sort-google-scholar
 
-sortgs is a Python tool for ranking Google Scholar publications by the number of citations. It is useful for finding relevant papers in a specific field. The data acquired from Google Scholar includes Title, Citations, Links, Rank, and a new column with the number of citations per year. In the background, it first try to fetch results using python requests. If it fails, it will use selenium to fetch the results. 
+A Python tool to rank Google Scholar publications by citations.
 
-## 🚀 Run it on Google Colab
-- **No-Code Version (new!)**:  [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/WittmannF/sort-google-scholar/blob/master/examples/Sort_Google_Scholar_No_Code_Version.ipynb)  — *No coding required! Perfect for a quick start!* ⚡  
-- **Code Version:** [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/WittmannF/sort-google-scholar/blob/master/examples/run_sortgs_on_colab.ipynb)— *For developers who want full control of what's behind the scenes!* 💻
+---
 
-> 💡 **All you need** is a Google Account to get started.  
-> ⚠️ **Note**: Google Scholar may block access after too many repetitive requests due to CAPTCHA checks, so proceed mindfully!
+## English
 
-## 📚 Colab No-Code Instructions
-https://github.com/user-attachments/assets/25de7bad-2a5d-4bcf-b486-faa1d7a29eb3
+### Overview
 
+This tool searches Google Scholar for academic publications based on keywords, extracts bibliographic metadata (author, title, citations, year, venue, publisher, abstract, PDF link), sorts results by citation count (or citations per year), and exports the data to CSV/Excel.
 
-## Installation
+### Features
 
-You can install `sortgs` directly using `pip`:
+- Search Google Scholar by keyword with configurable result count
+- Extract rich metadata: author, title, citations, year, venue, publisher, abstract, PDF link
+- Sort by total citations or citations per year
+- Filter by publication year range and language
+- Export results to CSV and/or Excel (with styled formatting)
+- Visualize citation distribution with a rank-vs-citations plot
+- Selenium fallback for anti-bot protection (CAPTCHA)
+- Debug mode using Web Archive snapshots
 
-```bash
-pip install sortgs
-```
-
-This will install the latest version of `sortgs` and its dependencies.
-
-## Usage
-
-Once installed, you can run `sortgs` directly from the command line:
+### Installation
 
 ```bash
-sortgs "your keyword"
+pip install .
 ```
 
-Replace `"your keyword"` with any keyword you'd like to search for. A CSV file with the name `your_keyword.csv` will be created in your current directory.
-
-## Misc
-For a feedback, send me an email: fernando [dot] wittmann [at] gmail [dot] com
-
-### Command Line Arguments
+Or from source:
 
 ```bash
-usage: sortgs [-h] [--sortby SORTBY] [--nresults NRESULTS] [--csvpath CSVPATH]
-              [--notsavecsv] [--plotresults] [--startyear STARTYEAR]
-              [--endyear ENDYEAR] [--debug] kw
-
-positional arguments:
-  kw                    Keyword to be searched. Use double quote followed by
-                        simple quote for an exact keyword. 
-                        Example: sortgs "'exact keyword'"
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --sortby SORTBY       Column to be sorted by. Default is "Citations". To sort
-                        by citations per year, use --sortby "cit/year"
-  --langfilter LANGFILTER [LANGFILTER ...]
-                        Only languages listed are permitted to pass the filter. 
-                        List of supported language codes: zh-CN, zh-TW, nl, en, fr,
-                        de, it, ja, ko, pl, pt, es, tr
-  --nresults NRESULTS   Number of articles to search on Google Scholar. Default
-                        is 100. (careful with robot checking if value is high)
-  --csvpath CSVPATH     Path to save the exported csv file. Default is the 
-                        current folder
-  --notsavecsv          By default, results are exported to a csv file. Select
-                        this option to just print results but not store them
-  --plotresults         Use this flag to plot results with the original rank on
-                        the x-axis and the number of citations on the y-axis.
-                        Default is False
-  --startyear STARTYEAR
-                        Start year when searching. Default is None
-  --endyear ENDYEAR     End year when searching. Default is current year
-  --debug               Debug mode. Used for unit testing. It will get pages
-                        stored on web archive
+pip install -r requirements.txt
 ```
 
-### Examples
+**Dependencies:** requests, beautifulsoup4, pandas, matplotlib, selenium, openpyxl (optional, for Excel export)
 
-1. **Default Search**:
-   ```bash
-   sortgs "machine learning"
-   ```
-   This command searches for the top 100 results related to "machine learning" and saves them as a CSV file.
+### Usage
 
-2. **Sort by Citations per Year**:
-   ```bash
-   sortgs "machine learning" --sortby "cit/year"
-   ```
-   Search for "machine learning" and sort by the number of citations per year.
+Basic search:
 
-3. **Specify Date Range**:
-   ```bash
-   sortgs "machine learning" --startyear 2005 --endyear 2015
-   ```
-   Search for papers from 2005 to 2015.
-
-4. **Search for an Exact Keyword**:
-   ```bash
-   sortgs "'machine learning'"
-   ```
-
-5. **Save Results in a Specific Path**:
-   ```bash
-   sortgs 'neural networks' --csvpath './examples/'
-   ```
-   This will save the results under a subfolder called 'examples'.
-
-6. **Multiple Keywords**:
-   ```bash
-   sortgs '"deep learning" OR "neural networks" OR "machine learning"' --sortby "cit/year"
-   ```
-
-7. **Language Filter**:
-   ```bash
-   sortgs "machine learning" --langfilter pt es fr de
-   ```
-   This will only include articles in Portuguese, Spanish, French, and German.
-
-### Output Example
-
-While running, `sortgs` will provide updates in the terminal:
-
-```
-❯ sortgs "'machine learning'"
-Running with the following parameters:
-Keyword: 'machine learning', Number of results: 100, Save database: True, Path: /Users/wittmann/sort-google-scholar, Sort by: Citations, Plot results: False, Start year: None, End year: 2023, Debug: False
-Loading next 10 results
-Loading next 20 results
-...
-```
-
-## Step-by-Step Installation
-1. Install Python 3 and its dependencies from **Requirements** (suggestion: use Ananconda https://www.anaconda.com/distribution/)
-2. In the terminal (or cmd if using Windows), run `pip install sortgs`
-3. Use the command `sortgs "your keyword"` (replace "your keyword" to any keyword that you'd like to search)
-4. A CSV file with the name `your_keyword.csv` should be created. 
-
-If those steps are too complicated for you, send me an email with a list of keyworks that you'd like them ranked to: fernando [dot] wittmann [at] gmail [dot] com
-
-## Conda Environment Setup
-
-### Creating the Environment
-```
-conda env create -f conda_environment.yml
-```
-
-### Reset the environment
-```
-conda deactivate
-conda remove --name sortgs --all
-conda env create -f environment.yml
-```
-
-### Activate the environment
-```
-conda activate sortgs
-```
-
-## Running Project Using Docker
-
-This guide will walk you through the process of installing Docker, pulling the `fernandowittmann/sort-google-scholar` Docker image, and running the project.
-
-### Step 1: Install Docker
-
-#### Windows or Mac
-
-1. **Download Docker Desktop**: Go to the [Docker Desktop website](https://www.docker.com/products/docker-desktop) and download the appropriate installer for your operating system.
-2. **Install Docker Desktop**: Run the installer and follow the on-screen instructions.
-3. **Verify Installation**: Open a terminal (or command prompt on Windows) and run `docker --version` to verify that Docker has been installed successfully.
-
-#### Linux
-
-1. **Update Package Index**: Run `sudo apt-get update` to update your package index.
-2. **Install Docker**: Run `sudo apt-get install docker-ce docker-ce-cli containerd.io` to install Docker.
-3. **Start Docker**: Run `sudo systemctl start docker` to start the Docker daemon.
-4. **Verify Installation**: Run `docker --version` to ensure Docker is installed correctly.
-
-### Step 2: Pull the Docker Image
-
-1. **Pull Image**: Run the following command to pull the `fernandowittmann/sort-google-scholar` image from Docker Hub:
-
-   ```bash
-   docker pull fernandowittmann/sort-google-scholar
-   ```
-
-### Step 3: Run the Project
-
-1. **Run the Docker Container**: Use the following command to run the container:
-
-   ```bash
-   docker run -v "$PWD/sortgs-results:/app" fernandowittmann/sort-google-scholar "machine learning" 
-   ```
-
-   Replace `$PWD` with the absolute path to your results directory if you are not in the parent directory of `sortgs-results`.
-
-
-## Contributing
-We use `pytest` for our test suite. To run all tests, install pytest and run:
 ```bash
-pip install pytest
-pytest
+python -m sortgs "machine learning"
 ```
-or:
+
+Advanced usage:
+
 ```bash
-python -m pytest
+python -m sortgs "cultural heritage CT imaging" \
+    --nresults 200 \
+    --sortby "Citations" \
+    --startyear 2018 \
+    --endyear 2024 \
+    --langfilter en \
+    --plotresults \
+    --csvpath ./output
 ```
-Ensure all tests pass before submitting a PR; GitHub Actions will also execute the test suite on each push.
 
-## About Robot Check
-Google Scholar may block access after too many repetitive requests due to CAPTCHA checks. If this issue arrises, selenium will be used to attempt to fetch the results. You might be asked to solve a CAPTCHA manually. Ideally, you should use a VPN to avoid this issue. When using selenium, you might need to install chromedriver. You can download it from https://developer.chrome.com/docs/chromedriver/downloads and add it to your PATH.
+### Command-line Arguments
 
-## LICENSE
-- MIT
+| Argument | Description | Default |
+|---|---|---|
+| `kw` | Keyword(s) to search | `"machine learning"` |
+| `--sortby` | Column to sort by (`Citations` or `cit/year`) | `Citations` |
+| `--nresults` | Number of results to fetch | `100` |
+| `--startyear` | Start year for filtering | `None` |
+| `--endyear` | End year for filtering | Current year |
+| `--langfilter` | Language filter (e.g. `en`, `zh-CN`, `fr`) | `All` |
+| `--csvpath` | Output directory for CSV/Excel | Current directory |
+| `--notsavecsv` | Skip saving results to file | `False` |
+| `--plotresults` | Show citation rank plot | `False` |
+| `--debug` | Use Web Archive for testing | `False` |
+| `--xlsx-only` | Export only Excel, skip CSV | `False` |
 
-## Updates
-Main branch has been renamed from master. Update it locally by running:
-```sh
-git branch -m master main
-git fetch origin
-git branch -u origin/main main
-git remote set-head origin -a
+### Output Columns
+
+| Column | Description |
+|---|---|
+| Rank | Sorted position |
+| Author | Paper author(s) |
+| Title | Paper title |
+| Citations | Total citation count |
+| Year | Publication year |
+| Publisher | Publishing house / platform |
+| Venue | Journal / conference name |
+| Content | Abstract / snippet |
+| Source | Original Google Scholar URL |
+| PDF | Direct PDF download link |
+| cit/year | Citations per year (normalized) |
+
+---
+
+## 中文
+
+### 概述
+
+本工具根据关键词在 Google Scholar 上搜索学术论文，提取元数据（作者、标题、引用次数、年份、会议/期刊、出版社、摘要、PDF链接），按引用量（或年均引用量）排序，并导出为 CSV/Excel 文件。
+
+### 功能特性
+
+- 按关键词搜索 Google Scholar，可自定义结果数量
+- 提取丰富元数据：作者、标题、引用次数、年份、会议/期刊、出版社、摘要、PDF链接
+- 支持按总引用数或年均引用数排序
+- 支持按出版年份范围和语言过滤
+- 导出结果为 CSV 和/或 Excel（带格式美化）
+- 可视化引用分布（排名 vs 引用数折线图）
+- Selenium 反爬回退机制（遇 CAPTCHA 暂停等待人工处理）
+- Debug 模式：使用 Web Archive 快照进行测试
+
+### 安装
+
+```bash
+pip install .
 ```
-## 💖 Support the Project
 
-If you find this project helpful and would like to support its development, consider making a donation. Your support is greatly appreciated!
+或从源码安装：
 
-[Donate via Wise](https://wise.com/pay/me/fernandow21)
+```bash
+pip install -r requirements.txt
+```
 
+**依赖：** requests, beautifulsoup4, pandas, matplotlib, selenium, openpyxl（可选，用于 Excel 导出）
+
+### 使用方法
+
+基础搜索：
+
+```bash
+python -m sortgs "machine learning"
+```
+
+高级用法：
+
+```bash
+python -m sortgs "cultural heritage CT imaging" \
+    --nresults 200 \
+    --sortby "Citations" \
+    --startyear 2018 \
+    --endyear 2024 \
+    --langfilter en \
+    --plotresults \
+    --csvpath ./output
+```
+
+### 命令行参数
+
+| 参数 | 描述 | 默认值 |
+|---|---|---|
+| `kw` | 搜索关键词 | `"machine learning"` |
+| `--sortby` | 排序列（`Citations` 或 `cit/year`） | `Citations` |
+| `--nresults` | 获取结果数量 | `100` |
+| `--startyear` | 起始年份 | `None` |
+| `--endyear` | 结束年份 | 当前年份 |
+| `--langfilter` | 语言过滤（如 `en`、`zh-CN`、`fr`） | `All` |
+| `--csvpath` | 输出目录 | 当前目录 |
+| `--notsavecsv` | 不保存结果到文件 | `False` |
+| `--plotresults` | 显示引用排名图 | `False` |
+| `--debug` | 使用 Web Archive 测试 | `False` |
+| `--xlsx-only` | 仅导出 Excel，跳过 CSV | `False` |
+
+### 输出字段说明
+
+| 字段 | 描述 |
+|---|---|
+| Rank | 排序位置 |
+| Author | 论文作者 |
+| Title | 论文标题 |
+| Citations | 总引用次数 |
+| Year | 发表年份 |
+| Publisher | 出版社/平台 |
+| Venue | 期刊/会议名称 |
+| Content | 摘要/片段 |
+| Source | Google Scholar 原始链接 |
+| PDF | PDF 下载直链 |
+| cit/year | 年均引用数（归一化） |
