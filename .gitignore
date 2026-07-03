@@ -1,0 +1,32 @@
+*.csv
+<<<<<<< HEAD
+*.xlsx
+=======
+>>>>>>> 5dbb8ec (first commit)
+
+### Python ###
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environments
+.env
+.venv
+
+# Other variables
+.DS_Store
+.vscode/
+
+# Ignore egg-info, dist folders and build
+*.egg-info
+dist
+build
